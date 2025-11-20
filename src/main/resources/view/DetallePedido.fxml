@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="650.0" prefWidth="800.0" style="-fx-background-color: #f4f4f4;"
+            xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="pe.edu.upeu.comidata.Controladores.DetallePedidoController">
+    <children>
+        <VBox spacing="15.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+            <Label text="Detalle del Pedido" style="-fx-font-weight: bold;">
+                <font>
+                    <Font size="22.0" />
+                </font>
+            </Label>
+
+            <TitledPane collapsible="false" text="Información General (PedidoDB)">
+                <content>
+                    <GridPane hgap="10.0" vgap="5.0">
+                        <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" prefWidth="120.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" prefWidth="250.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" prefWidth="120.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" prefWidth="250.0" />
+                        </columnConstraints>
+                        <rowConstraints>
+                            <RowConstraints prefHeight="25.0" vgrow="SOMETIMES" />
+                            <RowConstraints prefHeight="25.0" vgrow="SOMETIMES" />
+                            <RowConstraints prefHeight="25.0" vgrow="SOMETIMES" />
+                        </rowConstraints>
+
+                        <Label text="N° Pedido:" GridPane.rowIndex="0" />
+                        <Label fx:id="lblIdPedido" style="-fx-font-weight: bold;" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+                        <Label text="Fecha de Pedido:" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+                        <Label fx:id="lblFechaPedido" GridPane.columnIndex="3" GridPane.rowIndex="0" />
+
+                        <Label text="Cliente:" GridPane.rowIndex="1" />
+                        <Label fx:id="lblCliente" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                        <Label text="Total Pagado:" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                        <Label fx:id="lblTotalMonto" style="-fx-font-weight: bold; -fx-text-fill: green;" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+
+                        <Label text="Estado Pedido:" GridPane.rowIndex="2" />
+                        <Label fx:id="lblEstadoPedido" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+                        <Label text="Generado por:" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                        <Label fx:id="lblUsuarioGenerador" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                    </GridPane>
+                </content>
+            </TitledPane>
+
+            <Label text="Productos Comprados" style="-fx-font-weight: bold;" />
+            <TableView fx:id="tableViewDetalles" VBox.vgrow="ALWAYS" prefHeight="200.0">
+                <columns>
+                    <TableColumn fx:id="colProductoNombre" text="Producto" prefWidth="250" />
+                    <TableColumn fx:id="colCantidad" text="Cantidad" prefWidth="80" />
+                    <TableColumn fx:id="colPrecioUnitario" text="P. Unit. (S/)" prefWidth="100" />
+                    <TableColumn fx:id="colSubtotalDetalle" text="Subtotal (S/)" prefWidth="120" />
+                </columns>
+            </TableView>
+
+            <HBox spacing="15.0">
+                <VBox spacing="10.0" HBox.hgrow="ALWAYS">
+                    <TitledPane collapsible="false" text="Detalle de Pago (PagoDB)">
+                        <content>
+                            <GridPane hgap="10.0" vgap="5.0">
+                                <columnConstraints>
+                                    <ColumnConstraints prefWidth="120.0" />
+                                    <ColumnConstraints prefWidth="200.0" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                    <RowConstraints prefHeight="25.0" vgrow="SOMETIMES" />
+                                    <RowConstraints prefHeight="25.0" vgrow="SOMETIMES" />
+                                    <RowConstraints prefHeight="25.0" vgrow="SOMETIMES" />
+                                </rowConstraints>
+                                <Label text="Método de Pago:" GridPane.rowIndex="0" />
+                                <Label fx:id="lblMetodoPago" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                                <Label text="Estado de Pago:" GridPane.rowIndex="1" />
+                                <Label fx:id="lblEstadoPago" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                <Label text="Monto (S/):" GridPane.rowIndex="2" />
+                                <Label fx:id="lblMontoPago" style="-fx-font-weight: bold;" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                            </GridPane>
+                        </content>
+                    </TitledPane>
+                </VBox>
+
+                <VBox spacing="10.0" HBox.hgrow="ALWAYS">
+                    <TitledPane collapsible="false" text="Detalle de Entrega (EntregaDB)">
+                        <content>
+                            <GridPane hgap="10.0" vgap="5.0">
+                                <columnConstraints>
+                                    <ColumnConstraints prefWidth="120.0" />
+                                    <ColumnConstraints prefWidth="200.0" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                    <RowConstraints prefHeight="25.0" vgrow="SOMETIMES" />
+                                    <RowConstraints prefHeight="25.0" vgrow="SOMETIMES" />
+                                    <RowConstraints prefHeight="25.0" vgrow="SOMETIMES" />
+                                </rowConstraints>
+                                <Label text="Repartidor:" GridPane.rowIndex="0" />
+                                <Label fx:id="lblRepartidor" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                                <Label text="Estado de Entrega:" GridPane.rowIndex="1" />
+                                <Label fx:id="lblEstadoEntrega" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                <Label text="Dirección de Entrega:" GridPane.rowIndex="2" />
+                                <Label fx:id="lblDireccionEntrega" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                            </GridPane>
+                        </content>
+                    </TitledPane>
+                </VBox>
+            </HBox>
+
+            <HBox alignment="CENTER_RIGHT">
+                <Button mnemonicParsing="false" onAction="#cerrarVentana" text="Cerrar" style="-fx-background-color: #6c757d; -fx-text-fill: white;" />
+            </HBox>
+        </VBox>
+    </children>
+</AnchorPane>
