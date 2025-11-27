@@ -1,36 +1,30 @@
 package pe.edu.upeu.conceptos_poo.saborsistemas.Controladores;
 
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.stereotype.Controller;
-import pe.edu.upeu.conceptos_poo.saborsistemas.components.StageManager;
+import org.springframework.stereotype.Component;
 import pe.edu.upeu.conceptos_poo.saborsistemas.dto.SessionManager;
+import pe.edu.upeu.conceptos_poo.saborsistemas.dto.ViewConfig;
 import pe.edu.upeu.conceptos_poo.saborsistemas.modelos.Usuario;
 import pe.edu.upeu.conceptos_poo.saborsistemas.service.IUsuarioService;
+import pe.edu.upeu.conceptos_poo.saborsistemas.service.InterfaceManagerService;
 import pe.edu.upeu.conceptos_poo.saborsistemas.utils.Constantes;
-import pe.edu.upeu.conceptos_poo.saborsistemas.utils.InterfaceManager;
 
-import java.io.IOException;
 import java.util.Properties;
 
-@Controller
+@Component
 public class LoginController {
 
     // --- Servicios de Spring ---
     @Autowired private IUsuarioService personalService;
     @Autowired private ConfigurableApplicationContext applicationContext;
-    @Autowired private InterfaceManager interfaceManager;
+    @Autowired private InterfaceManagerService interfaceManagerService;
 
     @FXML private Label lblTituloLogin;
     @FXML private Label lblCorreoLogin;
@@ -54,14 +48,6 @@ public class LoginController {
         actualizarInterfazLogin();
     }
 
-    public void aplicarLogoTema() {
-        if (imgLogoLogin != null) {
-            interfaceManager.aplicarLogoTema(imgLogoLogin);
-        } else {
-            System.err.println("Advertencia: imgLogoLogin no está inyectado en LoginController.");
-        }
-    }
-
     private void entrarSistema() {
 
         String user = txtCorreoLogin.getText().trim();
@@ -77,16 +63,16 @@ public class LoginController {
             return;
         }
 
-        System.out.println("Login exitoso para: " + personal.getNombre_Usuario());
-
         SessionManager.getInstance().setUserId(personal.getIdUsuario());
         SessionManager.getInstance().setUserName(personal.getNombre_Usuario());
         SessionManager.getInstance().setUserPerfil(personal.getIdPerfil().getCorreo());
 
-        cargarEscena(Constantes.fxml_main, "comiData");
+        ViewConfig config= ViewConfig.builder().fxmlPath(Constantes.fxml_main).title("comiData").build();
+
+        interfaceManagerService.navigateTo(config);
     }
 
-    private void cargarEscena(String fxmlPath, String title) {
+    /*private void cargarEscena(String fxmlPath, String title) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxmlPath));
             fxmlLoader.setControllerFactory(applicationContext::getBean);
@@ -104,7 +90,7 @@ public class LoginController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
     private boolean validarCampos(String user, String pass) {
         lblCorreoVacioLogin.setVisible(false);
@@ -129,7 +115,7 @@ public class LoginController {
     }
 
     public void actualizarInterfazLogin() {
-        Properties properties = interfaceManager.getProperties();
+        Properties properties = interfaceManagerService.getProperties();
 
         lblTituloLogin.setText(properties.getProperty("login.label.titulo", "Iniciar Sesión"));
         lblCorreoLogin.setText(properties.getProperty("login.label.correo", "Correo o usuario:"));
@@ -141,7 +127,14 @@ public class LoginController {
         lblErrorLogin.setText(properties.getProperty("login.error.credenciales", "Credenciales incorrectas"));
         txtCorreoLogin.setPromptText(properties.getProperty("login.placeholder.correo", "Ingrese su correo o usuario"));
         txtPasswordLogin.setPromptText(properties.getProperty("login.placeholder.clave", "Ingrese su contraseña"));
+        interfaceManagerService.aplicarLogoTema(imgLogoLogin);
+    }
 
-        aplicarLogoTema();
+    public void aplicarLogoTema() {
+        if (imgLogoLogin != null) {
+            interfaceManagerService.aplicarLogoTema(imgLogoLogin);
+        } else {
+            System.err.println("Advertencia: imgLogoLogin no está inyectado en LoginController.");
+        }
     }
 }

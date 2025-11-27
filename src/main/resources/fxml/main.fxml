@@ -3,17 +3,28 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane fx:id="borderPaneMain" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/17.0.12"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="pe.edu.upeu.conceptos_poo.saborsistemas.Controladores.AdminMainController">
-
+<BorderPane fx:id="borderPaneMain"
+            prefHeight="700.0"
+            prefWidth="1200.0"
+            xmlns="http://javafx.com/javafx/17.0.12"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="pe.edu.upeu.conceptos_poo.saborsistemas.Controladores.AdminMainController">
     <top>
-        <MenuBar fx:id="menuBarMain" BorderPane.alignment="CENTER">
+        <MenuBar fx:id="menuBarMain"
+                 BorderPane.alignment="CENTER">
         </MenuBar>
     </top>
-
     <center>
-        <TabPane fx:id="tabPaneMain" tabClosingPolicy="ALL_TABS" BorderPane.alignment="CENTER">
-        </TabPane>
+        <BorderPane fx:id="bpPrincipal"
+                    BorderPane.alignment="CENTER">
+            <top>
+                <HBox fx:id="hbBotones"
+                      prefHeight="100.0"
+                      prefWidth="200.0"
+                      spacing="10"
+                      BorderPane.alignment="CENTER"/>
+            </top>
+        </BorderPane>
     </center>
 
 </BorderPane>

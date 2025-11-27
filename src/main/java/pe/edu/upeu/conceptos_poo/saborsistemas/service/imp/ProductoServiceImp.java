@@ -43,6 +43,11 @@ public class ProductoServiceImp implements ProductoInterface {
     }
 
     @Override
+    public void deleteAll() {
+        P_Repositorio.deleteAll();
+    }
+
+    @Override
     public long count() {
         return P_Repositorio.count();
     }

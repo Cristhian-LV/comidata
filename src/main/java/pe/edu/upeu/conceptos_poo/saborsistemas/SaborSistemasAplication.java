@@ -1,4 +1,4 @@
-package pe.edu.upeu.conceptos_poo.saborsistemas;
+    package pe.edu.upeu.conceptos_poo.saborsistemas;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -12,12 +12,11 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 import pe.edu.upeu.conceptos_poo.saborsistemas.Controladores.LoginController;
 import pe.edu.upeu.conceptos_poo.saborsistemas.components.StageManager;
-import pe.edu.upeu.conceptos_poo.saborsistemas.config.DataInitializer;
 import pe.edu.upeu.conceptos_poo.saborsistemas.service.*;
 import pe.edu.upeu.conceptos_poo.saborsistemas.utils.Constantes;
-import pe.edu.upeu.conceptos_poo.saborsistemas.utils.InterfaceManager;
+import pe.edu.upeu.conceptos_poo.saborsistemas.dto.ViewConfig;
 
-@SpringBootApplication
+    @SpringBootApplication
 public class SaborSistemasAplication extends Application {
 
     private ConfigurableApplicationContext applicationContext;
@@ -41,18 +40,31 @@ public class SaborSistemasAplication extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Scene scene = new Scene(parent);
-
-        InterfaceManager interfaceManager = applicationContext.getBean(InterfaceManager.class);
-        LoginController loginController = fxmlLoader.getController();
-        interfaceManager.aplicarTema(scene,false);
-        loginController.aplicarLogoTema();
 
         StageManager.setPrimaryStage(stage);
-        stage.setScene(scene);
-        stage.getIcons().add(new Image(getClass().getResource(Constantes.ic_comidata).toExternalForm()));
-        stage.setTitle("comiData - Login");
-        stage.setResizable(false);
-        stage.show();
+        InterfaceManagerService interfaceManagerService = applicationContext.getBean(InterfaceManagerService.class);
+
+        ViewConfig initialConfig = ViewConfig.builder()
+                .fxmlPath(Constantes.fxml_login)
+                .title("comiData - Login")
+                .resizable(false)
+                .build();
+
+        interfaceManagerService.navigateTo(initialConfig);
+
+
+//        Scene scene = new Scene(parent);
+//
+//        InterfaceManager interfaceManager = applicationContext.getBean(InterfaceManager.class);
+//        LoginController loginController = fxmlLoader.getController();
+//        interfaceManager.aplicarTema(scene,false);
+//        loginController.aplicarLogoTema();
+//
+//        StageManager.setPrimaryStage(stage);
+//        stage.setScene(scene);
+//        stage.getIcons().add(new Image(getClass().getResource(Constantes.ic_comidata).toExternalForm()));
+//        stage.setTitle("comiData - Login");
+//        stage.setResizable(false);
+//        stage.show();
     }
 }

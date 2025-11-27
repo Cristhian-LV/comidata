@@ -256,6 +256,7 @@ public class ProductosController {
         else {
             lblMensajeProducto.setStyle("-fx-text-fill: green;");
         }
+
     }
 
     private void limpiarEstilosErrorProducto() {

@@ -47,7 +47,7 @@
                prefHeight="43"
                prefWidth="300"
                promptText="correo@.com"
-               text="anam"
+               text="jclv"
                style="-fx-font-size: 14px; -fx-background-radius: 22;">
         <padding>
             <Insets left="15.0"

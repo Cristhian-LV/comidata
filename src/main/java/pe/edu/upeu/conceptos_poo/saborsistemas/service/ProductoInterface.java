@@ -11,6 +11,7 @@ public interface ProductoInterface {
     Producto updateProducto(Producto producto); // Actualizar un producto
     void deleteProductoById(Long id); // Eliminar un producto por ID
     Producto findProductoById(Long id); // Buscar un producto por ID
+    void deleteAll();
 
     long count();
 

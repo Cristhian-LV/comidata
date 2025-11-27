@@ -1,37 +1,30 @@
 package pe.edu.upeu.conceptos_poo.saborsistemas.Controladores;
 
-
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
-import javafx.stage.Stage;
+import javafx.scene.layout.HBox;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Controller;
-import pe.edu.upeu.conceptos_poo.saborsistemas.components.StageManager;
 import pe.edu.upeu.conceptos_poo.saborsistemas.dto.SessionManager;
+import pe.edu.upeu.conceptos_poo.saborsistemas.dto.ViewConfig;
+import pe.edu.upeu.conceptos_poo.saborsistemas.service.InterfaceManagerService;
 import pe.edu.upeu.conceptos_poo.saborsistemas.utils.Constantes;
-import pe.edu.upeu.conceptos_poo.saborsistemas.utils.InterfaceManager;
-
-import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
-import java.util.prefs.Preferences;
 
 @Controller
 public class AdminMainController {
     @Autowired private ConfigurableApplicationContext applicationContext; // Contexto de Spring
-    @Autowired private InterfaceManager interfaceManager;
+    @Autowired private InterfaceManagerService interfaceManagerService;
 
     @FXML private BorderPane borderPaneMain;
     @FXML private MenuBar menuBarMain;
-    @FXML private TabPane tabPaneMain;
+    @FXML private BorderPane bpPrincipal;
 
     private String userRole;
 
@@ -40,18 +33,11 @@ public class AdminMainController {
 
         this.userRole = SessionManager.getInstance().getUserPerfil();
         if (this.userRole == null || this.userRole.isEmpty()) {
-            // Fallback: si por alguna razón no se establece, asumimos el rol principal
             this.userRole = Constantes.ROL_ADMINISTRADOR;
         }
-
         crearMenuBar();
-        actualizarInterfaz();
-        Platform.runLater(() -> {
-            interfaceManager.aplicarTema(borderPaneMain.getScene(),false);
-        });
-
-        // abrirTabConFXML(Constantes.fxml_producto, "Gestionar Productos");
-        // abrirTabConFXML("/fxml/main_reporte.fxml", "Reporte ventas");
+        Parent root = interfaceManagerService.loadContent(Constantes.fxml_producto);
+        bpPrincipal.setCenter(root);
     }
 
     // --- Configuración de Menús ---
@@ -59,7 +45,7 @@ public class AdminMainController {
         menuBarMain.getMenus().clear();
 
         List<Constantes.MenuStruct> menus = obtenerMenusPorRol(userRole);
-        Properties currentProperties = interfaceManager.getProperties();
+        Properties currentProperties = interfaceManagerService.getProperties();
 
         for (Constantes.MenuStruct menuStruct : menus) {
 
@@ -75,6 +61,7 @@ public class AdminMainController {
             }
             menuBarMain.getMenus().add(menu);
         }
+        crearBotones();
     }
 
     private List<Constantes.MenuStruct> obtenerMenusPorRol(String rol) {
@@ -98,7 +85,7 @@ public class AdminMainController {
     }
 
     private void crearMenuAjustes(Menu menuAjustes) {
-        Properties currentProperties = interfaceManager.getProperties();
+        Properties currentProperties = interfaceManagerService.getProperties();
 
         Menu mIdioma = new Menu(currentProperties.getProperty("menu.nombre.idioma"));
         for (String idioma: Constantes.miIdiomas){
@@ -126,75 +113,73 @@ public class AdminMainController {
             case "SALIR":
                 salirAplicacion();
                 break;
-//            case "GESTION_PRODUCTOS":
-//                break;
-//            case "DATOS_USUARIO":
-//                break;
-//            case "DATOS_NEGOCIO":
-//                break;
-//            case "MANUAL_USUARIO":
-//                break;
-//            case "ACERCA_DE":
-//                break;
+/*            case "GESTION_PRODUCTOS":
+                break;
+            case "DATOS_USUARIO":
+                break;
+            case "DATOS_NEGOCIO":
+                break;
+            case "MANUAL_USUARIO":
+                break;
+            case "ACERCA_DE":
+                break;
             default:
                 break;
+ */
         }
-
-        // 2. Manejar apertura de Tabs (si tiene FXML Path)
         if (itemStruct.fxmlPath != null) {
-            // Usamos la clave del item para obtener el título traducido de la pestaña
-            Properties currentProperties = interfaceManager.getProperties();
-            String tabTitle = currentProperties.getProperty(itemStruct.key, "Pestaña Sin Título");
-            abrirTabConFXML(itemStruct.fxmlPath, tabTitle);
+            Parent root = interfaceManagerService.loadContent(itemStruct.fxmlPath);
+            bpPrincipal.setCenter(root);
+        }
+    }
+
+    private void crearBotones(){
+        Properties currentProperties = interfaceManagerService.getProperties();
+        HBox contenedorBotones = new HBox();
+        contenedorBotones.setSpacing(10);
+        contenedorBotones.setPadding(new Insets(10));
+
+        List<Constantes.MenuItemStruct> items= obtenerItemsPorRol(userRole);
+        for (Constantes.MenuItemStruct item: items){
+            String btnName = currentProperties.getProperty(item.key, "SS");
+
+            Button btn=new Button(btnName);
+            btn.setOnAction(e -> manejarAccionMenu(item));
+            contenedorBotones.getChildren().add(btn);
+        }
+        bpPrincipal.setTop(contenedorBotones);
+    }
+
+    private List<Constantes.MenuItemStruct> obtenerItemsPorRol(String rol) {
+        switch (rol) {
+            case Constantes.ROL_VENDEDOR:
+                return Constantes.menuCaja.items;
+            case Constantes.ROL_REPARTIDOR:
+                return Constantes.menuReparto.items;
+            case Constantes.ROL_ADMINISTRADOR:
+            default:
+                return Constantes.menuAdministracion.items;
         }
     }
 
 //Lógica de Interfaz ---------------------------------------------------------------------------------
 
     private void cambiarTema(String tema) {
-        interfaceManager.guardarTema(tema);
-        // Aplicar el tema completo de la aplicación principal
-        interfaceManager.aplicarTema(borderPaneMain.getScene(), false);
+        interfaceManagerService.guardarTema(tema);
+        interfaceManagerService.aplicarTema(borderPaneMain.getScene(), false);
     }
 
     private void cambiarIdioma(String idioma) {
-        interfaceManager.cambiarIdioma(idioma);
-        actualizarInterfaz();
-    }
-
-    private void actualizarInterfaz(){
+        interfaceManagerService.cambiarIdioma(idioma);
         crearMenuBar();
     }
 
     private void cerrarSesion() {
         System.out.println("Cerrando sesión...");
 
-        try {
-            Stage stage = StageManager.getPrimaryStage();
-            if (stage == null) {
-                stage = (Stage) borderPaneMain.getScene().getWindow();
-            }
-
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(Constantes.fxml_login));
-            fxmlLoader.setControllerFactory(applicationContext::getBean);
-            Parent loginRoot = fxmlLoader.load();
-            Scene scene = new Scene(loginRoot);
-
-            LoginController loginController = fxmlLoader.getController();
-
-            interfaceManager.aplicarTema(scene, false); //true para usar otro fondo en el login
-
-            loginController.actualizarInterfazLogin();
-
-            stage.setScene(scene);
-            stage.setTitle("comiData - Login");
-            stage.centerOnScreen();
-            stage.setResizable(false);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.err.println("Error al volver a la pantalla de login.");
-        }
+        ViewConfig config = ViewConfig.builder().title("comiData - Login").fxmlPath(Constantes.fxml_login)
+                .resizable(false).build();
+        interfaceManagerService.navigateTo(config);
     }
 
     private void salirAplicacion() {
@@ -202,36 +187,4 @@ public class AdminMainController {
         System.exit(0);
     }
 
-    private void abrirTabConFXML(String fxmlPath, String tituloTab) {
-        // Buscar si ya existe una pestaña con ese título
-//        for (Tab tab : tabPaneMain.getTabs()) {
-//            if (tab.getText().equals(tituloTab)) {
-//                tabPaneMain.getSelectionModel().select(tab);
-//                return;
-//            }
-//        }
-        tabPaneMain.getTabs().clear();
-        // Si no existe, crear la nueva pestaña
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-            loader.setControllerFactory(applicationContext::getBean); // IMPORTANTE para Spring
-            Parent root = loader.load();
-
-            Tab nuevaPestana = new Tab(tituloTab);
-            nuevaPestana.setContent(root); // Añadir el contenido cargado
-            nuevaPestana.setClosable(false);
-
-            tabPaneMain.getTabs().add(nuevaPestana); // Añadir la nueva pestaña
-            tabPaneMain.getSelectionModel().select(nuevaPestana); // Seleccionarla
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            // Mostrar un Alert al usuario
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error al Cargar Módulo");
-            alert.setHeaderText("No se pudo cargar la vista: " + tituloTab);
-            alert.setContentText("Detalle: " + e.getMessage());
-            alert.showAndWait();
-        }
-    }
 }
