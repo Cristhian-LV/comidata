@@ -14,6 +14,7 @@ public interface Constantes {
     String fxml_new_producto= "/fxml/ga_new_producto.fxml";
     String fxml_new_personal= "/fxml/ga_new_personal.fxml";
     String fxml_reporte= "/fxml/reporte.fxml";
+    String fxml_carrito= "/fxml/ga_ventcarrito.fxml";
     String fxml_venta= "/fxml/main_venta.fxml";
 
 
@@ -74,6 +75,7 @@ public interface Constantes {
     MenuItemStruct miGestionClientes = new MenuItemStruct("menuitem.nombre.gestion_clientes", "GESTION_CLIENTES", fxml_clientes); // Asumimos ruta temporal
     MenuItemStruct miEstadoInventario = new MenuItemStruct("menuitem.nombre.estado_inventario", "ESTADO_INVENTARIO", null);
     MenuItemStruct miInformeCaja = new MenuItemStruct("menuitem.nombre.informe", "INFORME_CAJA", fxml_reporte);
+    MenuItemStruct miCarrito = new MenuItemStruct("menuitem.nombre.carrito", "CARRITO", fxml_carrito);
 
     // REPARTO
     MenuItemStruct miPedidosReparto = new MenuItemStruct("menuitem.nombre.pedidos", "PEDIDOS_REPARTO", null);
@@ -85,7 +87,7 @@ public interface Constantes {
 
     // --- MENU STRUCTS ---
     MenuStruct menuArchivo = new MenuStruct("menu.nombre.archivo", Arrays.asList(miDatosUsuario, miDatosNegocio, miCerrarSesion, miSalir));
-    MenuStruct menuAdministracion = new MenuStruct("menu.nombre.administracion", Arrays.asList(miPedidoRapido, miGestionProductos, miGestionPersonal, miGestionClientes, miInformeCaja));
+    MenuStruct menuAdministracion = new MenuStruct("menu.nombre.administracion", Arrays.asList(miPedidoRapido, miGestionProductos, miGestionPersonal, miGestionClientes, miCarrito,miInformeCaja));
     //MenuStruct menuAdministracion = new MenuStruct("menu.nombre.administracion", Arrays.asList(miGestionProductos, miGestionPersonal, miGestionInventario));
     MenuStruct menuCaja = new MenuStruct("menu.nombre.caja", Arrays.asList(miPedidoRapido, miPedidosCaja, miGestionClientes, miEstadoInventario, miInformeCaja));
     MenuStruct menuReparto = new MenuStruct("menu.nombre.reparto", Arrays.asList(miPedidosReparto, miInformeReparto));
